@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+env/
+venv/
+.ipynb_checkpoints/ # For Jupyter/Colab notebooks
+.vscode/ # VS Code workspace settings if you don't want to share
+# Environment
+.env
+# Pipenv
+.venv/
+# virtualenv
+venv/
+env/
+# Data files (scraped output)
+data/
+# WebDriver logs
+geckodriver.log
+chromedriver.log

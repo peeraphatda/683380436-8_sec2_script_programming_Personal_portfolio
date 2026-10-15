@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.ipynb_checkpoints/
+.vscode/
+
+# Secrets - DO NOT COMMIT
+.env
+
+# Logs
+*.log
+
+# Generated files (anchored so data/reports/ sample files are still committed)
+/audit_reports/
+data/incoming_attachments/*
+!data/incoming_attachments/.gitkeep
+data/attachments/*
+!data/attachments/.gitkeep

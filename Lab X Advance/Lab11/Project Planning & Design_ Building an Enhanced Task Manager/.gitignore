@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.ipynb_checkpoints/
+.vscode/
+
+# Environment
+.env
+
+# Generated documents (re-created by running main.py)
+documents/*
+!documents/reports/
+documents/reports/*
+!documents/.gitkeep

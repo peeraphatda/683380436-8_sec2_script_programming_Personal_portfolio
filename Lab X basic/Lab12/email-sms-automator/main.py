@@ -19,7 +19,7 @@ def main():
     attachments_dir = os.path.join(data_dir, "attachments")
     ensure_directory_exists(attachments_dir)
 
-    # --- Load credentials from environment variables ---
+    # --- Load credentia-s from environment variables ---
     try:
         sender_email = get_env_variable("SENDER_EMAIL")
         sender_app_password = get_env_variable("SENDER_APP_PASSWORD")
@@ -29,9 +29,14 @@ def main():
         test_recipient_email = get_env_variable("TEST_RECIPIENT_EMAIL")
         test_sms_phone_number = get_env_variable("TEST_SMS_PHONE_NUMBER")
         test_sms_carrier = get_env_variable("TEST_SMS_CARRIER")
+        student_name = get_env_variable("STUDENT_NAME")
+        student_id = get_env_variable("STUDENT_ID")
     except ValueError as e:
         logger.critical(f"Configuration error: {e}")
         sys.exit(1)
+
+    # Signature appended to every email body (assignment requires name + student ID in the email)
+    signature = f"\n\n--\nName: {student_name}\nStudent ID: {student_id}"
 
     email_sender = EmailSender(smtp_server, smtp_port, sender_email, sender_app_password)
     email_receiver = EmailReceiver(imap_server, sender_email, sender_app_password)
@@ -42,7 +47,7 @@ def main():
     email_sender.send_email(
         recipient_email=test_recipient_email,
         subject="Automated Python Test Email",
-        body="Hello from your Python automation script! This is a plain text email.",
+        body="Hello from your Python automation script! This is a plain text email." + signature,
     )
     time.sleep(2)
 
@@ -53,7 +58,7 @@ def main():
         email_sender.send_email(
             recipient_email=test_recipient_email,
             subject="Python Test Email with Attachment - Daily Report",
-            body="Please find the daily report attached.",
+            body="Please find the daily report attached." + signature,
             attachment_path=attachment_file_path,
         )
     else:
@@ -75,7 +80,7 @@ def main():
     email_sender.send_email(
         recipient_email=sender_email,  # send to self so there is something to find
         subject=DEMO_SUBJECT,
-        body="This email is specifically for the receiving demo. It has an attachment!",
+        body="This email is specifically for the receiving demo. It has an attachment!" + signature,
         attachment_path=attachment_file_path,
     )
     logger.info("Sent a demo email to self. Waiting for delivery...")

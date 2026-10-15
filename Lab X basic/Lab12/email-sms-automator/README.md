@@ -34,6 +34,7 @@ source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env            # Windows: copy .env.example .env
 ```
+Set `STUDENT_NAME` and `STUDENT_ID` in `.env` too: they are printed at the bottom of every email body.
 Edit `.env` with your Gmail address and a **Gmail App Password**
 (Google Account -> Security -> 2-Step Verification -> App passwords).
 Your normal Gmail password will not work.
