@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.ipynb_checkpoints/
+.vscode/
+
+# Secrets - DO NOT COMMIT
+.env
+
+# Logs
+*.log
+
+# Downloaded attachments
+data/attachments/*
+!data/attachments/.gitkeep
