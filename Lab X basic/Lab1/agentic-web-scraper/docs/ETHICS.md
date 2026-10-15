@@ -1,0 +1,1 @@
+# Web Scraping Ethics Guidelines 

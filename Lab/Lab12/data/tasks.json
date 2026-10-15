@@ -1,0 +1,41 @@
+[
+    {
+        "id": 1,
+        "description": "Buy groceries",
+        "completed": false,
+        "tags": ["home", "shopping"],
+        "_type": "Task"
+    },
+    {
+        "id": 2,
+        "description": "Submit final project",
+        "completed": false,
+        "tags": ["school", "urgent"],
+        "due_date": "2026-10-20",
+        "_type": "DueDateTask"
+    },
+    {
+        "id": 3,
+        "description": "Prepare presentation slides",
+        "completed": false,
+        "tags": ["school", "presentation"],
+        "priority": "High",
+        "_type": "PriorityTask"
+    },
+    {
+        "id": 4,
+        "description": "Read Python documentation",
+        "completed": true,
+        "tags": ["study"],
+        "priority": "Low",
+        "_type": "PriorityTask"
+    },
+    {
+        "id": 5,
+        "description": "Pay electricity bill",
+        "completed": false,
+        "tags": ["home", "urgent"],
+        "due_date": "2026-10-15",
+        "_type": "DueDateTask"
+    }
+]

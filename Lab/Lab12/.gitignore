@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Notebooks / editors
+.ipynb_checkpoints/
+.vscode/
+
+# Environment
+.env
+
+# Data files (uncomment if you do NOT want to commit your tasks)
+# data/tasks.json
