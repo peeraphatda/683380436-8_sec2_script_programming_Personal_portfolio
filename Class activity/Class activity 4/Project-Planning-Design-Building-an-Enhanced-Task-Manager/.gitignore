@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.ipynb_checkpoints/
+
+# Editor / OS
+.vscode/
+.DS_Store
+
+# Environment
+.env
