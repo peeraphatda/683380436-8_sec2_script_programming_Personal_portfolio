@@ -1,46 +1,59 @@
-# LabADV-week-11/main.py
-import argparse
+import sys
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.config_parser import ConfigParser
-from src.document_agent import DocumentAgent
-from src.utils import setup_logging
+from config_parser import ConfigParser
+from document_agent import DocumentAgent
+from utils import setup_logging, ensure_directory_exists
 
 logger = setup_logging(__name__)
 
 
+def check_required_files(config):
+    """ตรวจสอบไฟล์ที่ต้องมีอยู่ก่อนรัน (template และ PDF ต้นฉบับ)"""
+    ok = True
+    for task in config['tasks']:
+        required = []
+        if 'template_path' in task:
+            required.append(task['template_path'])
+        if task['type'] != 'extract_word_text' and 'input_pdf' in task:
+            required.append(task['input_pdf'])
+        required += task.get('input_pdfs', [])
+        for path in required:
+            if not os.path.exists(path):
+                logger.error(f"Required input file not found: {path}")
+                ok = False
+    return ok
+
+
 def main():
-    """Main entry point for the document automation agent."""
-    arg_parser = argparse.ArgumentParser(description="Document Automation Agent")
-    arg_parser.add_argument("-c", "--config",
-                            default=os.path.join('configs', 'document_automation_config.json'),
-                            help="Path to the JSON config file")
-    arg_parser.add_argument("-t", "--task", action="append",
-                            help="Run only this task id (can be repeated)")
-    arg_parser.add_argument("--list", action="store_true", help="List tasks and exit")
-    args = arg_parser.parse_args()
-
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    config_path = args.config if os.path.isabs(args.config) else os.path.join(base_dir, args.config)
+    config_file_path = os.path.join(base_dir, 'configs', 'document_automation_config.json')
 
-    try:
-        config = ConfigParser(config_path).load_config()
+    ensure_directory_exists(os.path.join(base_dir, 'documents'))
+    ensure_directory_exists(os.path.join(base_dir, 'templates'))
 
-        if args.list:
-            for t in config["tasks"]:
-                flag = "" if t.get("enabled", True) else " [disabled: use -t]"
-                print(f"{t['id']:<24} {t['type']}.{t['action']:<16} {t.get('description', '')}{flag}")
-            return 0
+    config_parser = ConfigParser(config_file_path)
+    config = config_parser.load_config()
 
-        logger.info("--- Starting Document Automation Workflow ---")
-        agent = DocumentAgent(config, base_dir=base_dir)
-        agent.run(only=args.task)
-        logger.info("--- Document Automation Workflow Completed ---")
-        return 1 if any(r["status"] == "failed" for r in agent.results) else 0
-    except Exception as e:
-        logger.critical(f"Execution failed: {e}")
-        return 1
+    # แปลง path ใน config ให้เป็น Absolute path
+    for key, value in config['output_files'].items():
+        config['output_files'][key] = os.path.join(base_dir, value)
+    for task in config['tasks']:
+        for k in ['template_path', 'output_path', 'input_pdf', 'output_pdf', 'input_docx', 'output_text_file']:
+            if k in task:
+                task[k] = os.path.join(base_dir, task[k])
+        if 'input_pdfs' in task:
+            task['input_pdfs'] = [os.path.join(base_dir, p) for p in task['input_pdfs']]
+
+    if not check_required_files(config):
+        logger.critical("Missing required input files! Please check the template and the input PDFs in 'documents/'.")
+        return
+
+    agent = DocumentAgent(config)
+    agent.run()
+    logger.info("Document automation process completed.")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

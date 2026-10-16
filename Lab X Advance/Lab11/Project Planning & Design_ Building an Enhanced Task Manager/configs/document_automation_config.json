@@ -1,209 +1,59 @@
 {
-  "project": {
-    "name": "Document Automation Agent",
-    "author": "sapphanyu",
-    "version": "1.0.0"
+  "global_data": {
+    "REPORT_DATE": "2026-09-08",
+    "AUTHOR_NAME": "AI Document Agent",
+    "COMPANY_NAME": "Automated Docs Inc."
   },
-  "paths": {
-    "documents_dir": "documents",
-    "reports_dir": "documents/reports",
-    "templates_dir": "templates"
-  },
-  "settings": {
-    "continue_on_error": true,
-    "log_level": "INFO"
+  "output_files": {
+    "generated_report": "documents/generated_report.docx",
+    "watermarked_pdf": "documents/watermarked_document.pdf",
+    "merged_pdf": "documents/merged_docs.pdf"
   },
   "tasks": [
     {
-      "id": "create_dummy_doc1",
-      "type": "pdf",
-      "action": "create_pdf",
-      "description": "Create the first dummy PDF",
-      "params": {
-        "output": "dummy_doc1.pdf",
-        "title": "Dummy Document 1",
-        "paragraphs": [
-          "This is the first dummy document used for the document automation lab.",
-          "It will be merged with the second dummy document later in the workflow.",
-          "Task Manager planning: define scope, design modules, then build and test."
-        ]
-      }
+      "name": "Generate Monthly Performance Report",
+      "type": "generate_word_report",
+      "template_path": "templates/report_template.docx",
+      "output_path": "documents/generated_report.docx",
+      "data": {
+        "REPORT_TITLE": "Monthly Performance Summary",
+        "INTRODUCTION_TEXT": "This automated report provides a summary of key performance indicators.",
+        "MONTH_PERIOD": "August 2026"
+      },
+      "table_data": [
+        ["Category", "Value", "Trend"],
+        ["Sales Revenue", "$120,000", "Up 10%"],
+        ["Customer Acquisition", "500", "Stable"],
+        ["Project Completion Rate", "95%", "Excellent"]
+      ]
     },
     {
-      "id": "create_dummy_doc2",
-      "type": "pdf",
-      "action": "create_pdf",
-      "description": "Create the second dummy PDF",
-      "params": {
-        "output": "dummy_doc2.pdf",
-        "title": "Dummy Document 2",
-        "paragraphs": [
-          "This is the second dummy document.",
-          "Automating repetitive document work saves time and reduces human error."
-        ]
-      }
+      "name": "Apply Confidential Watermark to PDF",
+      "type": "apply_pdf_watermark",
+      "input_pdf": "documents/source_document.pdf",
+      "output_pdf": "documents/watermarked_document.pdf",
+      "watermark_text": "CONFIDENTIAL",
+      "font_size": 70,
+      "color": [1, 0, 0, 0.15],
+      "angle": 55
     },
     {
-      "id": "merge_dummy_docs",
-      "type": "pdf",
-      "action": "merge_pdfs",
-      "description": "Merge dummy_doc1.pdf and dummy_doc2.pdf",
-      "params": {
-        "inputs": [
-          "dummy_doc1.pdf",
-          "dummy_doc2.pdf"
-        ],
-        "output": "merged_docs.pdf"
-      }
+      "name": "Merge Project Documentation",
+      "type": "merge_pdfs",
+      "input_pdfs": ["documents/dummy_doc1.pdf", "documents/dummy_doc2.pdf"],
+      "output_pdf": "documents/merged_docs.pdf"
     },
     {
-      "id": "create_source_document",
-      "type": "pdf",
-      "action": "create_pdf",
-      "description": "Create a source PDF for text extraction and watermarking",
-      "params": {
-        "output": "source_document.pdf",
-        "title": "Source Document",
-        "paragraphs": [
-          "This document is the source for text extraction and watermarking.",
-          "Python libraries used: pypdf, reportlab and python-docx.",
-          "Every task run by the agent is recorded in an audit report."
-        ]
-      }
+      "name": "Extract Text from Generated Word Report",
+      "type": "extract_word_text",
+      "input_docx": "documents/generated_report.docx",
+      "output_text_file": "documents/extracted_word_text.txt"
     },
     {
-      "id": "extract_pdf_text",
-      "type": "pdf",
-      "action": "extract_text",
-      "description": "Extract text from source_document.pdf",
-      "params": {
-        "input": "source_document.pdf",
-        "output": "extracted_pdf_text.txt"
-      }
-    },
-    {
-      "id": "watermark_pdf",
-      "type": "pdf",
-      "action": "add_watermark",
-      "description": "Add a diagonal watermark to source_document.pdf",
-      "params": {
-        "input": "source_document.pdf",
-        "output": "watermarked_document.pdf",
-        "text": "CONFIDENTIAL",
-        "opacity": 0.2,
-        "font_size": 60,
-        "angle": 45
-      }
-    },
-    {
-      "id": "generate_word_report",
-      "type": "word",
-      "action": "generate_report",
-      "description": "Fill report_template.docx with data",
-      "params": {
-        "template": "report_template.docx",
-        "output": "generated_report.docx",
-        "data": {
-          "title": "Enhanced Task Manager - Project Report",
-          "author": "sapphanyu",
-          "date": "{{today}}",
-          "summary": "This report was generated automatically from a Word template by the Document Automation Agent.",
-          "status": "Completed"
-        }
-      }
-    },
-    {
-      "id": "extract_word_text",
-      "type": "word",
-      "action": "extract_text",
-      "description": "Extract text from generated_report.docx",
-      "params": {
-        "input": "generated_report.docx",
-        "output": "extracted_word_text.txt"
-      }
-    },
-    {
-      "id": "create_word_report",
-      "type": "word",
-      "action": "create_report",
-      "enabled": false,
-      "description": "PDF-to-Word reporter: heading, formatted text, PDF text and a table",
-      "params": {
-        "output": "output_report.docx",
-        "title": "Automated Document Report",
-        "intro": "This report was automatically generated from PDF content and structured data.",
-        "pdf_input": "source_document.pdf",
-        "table": [
-          [
-            "Metric",
-            "Value",
-            "Notes"
-          ],
-          [
-            "Source PDF",
-            "source_document.pdf",
-            "Text extracted"
-          ],
-          [
-            "Document Type",
-            "PDF/Word Hybrid",
-            ""
-          ],
-          [
-            "Generated Date",
-            "{{today}}",
-            ""
-          ]
-        ]
-      }
-    },
-    {
-      "id": "split_pdf",
-      "type": "pdf",
-      "action": "split_pdf",
-      "enabled": false,
-      "description": "Split merged_docs.pdf into one file per page",
-      "params": {
-        "input": "merged_docs.pdf",
-        "output_dir": "split",
-        "pages_per_split": 1
-      }
-    },
-    {
-      "id": "rotate_pdf",
-      "type": "pdf",
-      "action": "rotate_pages",
-      "enabled": false,
-      "description": "Rotate every page of source_document.pdf by 90 degrees",
-      "params": {
-        "input": "source_document.pdf",
-        "output": "rotated_document.pdf",
-        "angle": 90
-      }
-    },
-    {
-      "id": "encrypt_pdf",
-      "type": "pdf",
-      "action": "encrypt_pdf",
-      "enabled": false,
-      "description": "Password-protect source_document.pdf (demo password only)",
-      "params": {
-        "input": "source_document.pdf",
-        "output": "encrypted_document.pdf",
-        "password": "demo1234"
-      }
-    },
-    {
-      "id": "decrypt_pdf",
-      "type": "pdf",
-      "action": "decrypt_pdf",
-      "enabled": false,
-      "description": "Remove the password from encrypted_document.pdf",
-      "params": {
-        "input": "encrypted_document.pdf",
-        "output": "decrypted_document.pdf",
-        "password": "demo1234"
-      }
+      "name": "Extract Text from Source PDF",
+      "type": "extract_pdf_text",
+      "input_pdf": "documents/source_document.pdf",
+      "output_text_file": "documents/extracted_pdf_text.txt"
     }
   ]
 }
